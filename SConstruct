@@ -14,8 +14,8 @@ def validate_parent_dir(key, val, env):
         raise UserError("'%s' is not a directory: %s" % (key, os.path.dirname(val)))
 
 
-libname = "EXTENSION-NAME"
-projectdir = "demo"
+libname = "libname"
+projectdir = "project"
 
 localEnv = Environment(tools=["default"], PLATFORM="")
 
@@ -66,15 +66,18 @@ Run the following command to download godot-cpp:
 
 env = SConscript("godot-cpp/SConstruct", {"env": env, "customs": customs})
 
-env.Append(CPPPATH=["src/"])
-sources = Glob("src/*.cpp")
+def find_directories(directory):
+    directories = ["src/"]
+    for root, dirs, files in os.walk(directory):
+        directories.extend(["src/" + os.path.relpath(os.path.join(root, d), directory).replace("\\", "/") + "/" for d in dirs])
+    return directories
 
-if env["target"] in ["editor", "template_debug"]:
-    try:
-        doc_data = env.GodotCPPDocData("src/gen/doc_data.gen.cpp", source=Glob("doc_classes/*.xml"))
-        sources.append(doc_data)
-    except AttributeError:
-        print("Not including class reference as we're targeting a pre-4.3 baseline.")
+source_dirs = find_directories(os.getcwd() + "/src")
+env.Append(CPPPATH=source_dirs)
+
+sources = []
+for d in source_dirs:
+    sources.append(Glob(d + "*.cpp"))
 
 file = "{}{}{}".format(libname, env["suffix"], env["SHLIBSUFFIX"])
 
@@ -88,7 +91,7 @@ library = env.SharedLibrary(
     source=sources,
 )
 
-copy = env.InstallAs("{}/bin/{}/lib{}".format(projectdir, env["platform"], file), library)
+copy = env.InstallAs("{}/bin/lib{}".format(projectdir, file), library)
 
 default_args = [library, copy]
 if localEnv.get("compiledb", False):

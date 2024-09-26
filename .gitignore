@@ -3,18 +3,6 @@
 
 # Ignore library files but not the gdextension file
 demo/bin/*
-!demo/bin/android
-demo/bin/android/*
-!demo/bin/android/.gitkeep
-!demo/bin/linux
-demo/bin/linux/*
-!demo/bin/linux/.gitkeep
-!demo/bin/macos
-demo/bin/macos/*
-!demo/bin/macos/.gitkeep
-!demo/bin/windows
-demo/bin/windows/*
-!demo/bin/windows/.gitkeep
 !demo/bin/*.gdextension
 .sconsign*.dblite
 
@@ -41,9 +29,12 @@ compile_commands.json
 *.includes
 *.idb
 *.exp
+*.wasm
 
 # Other stuff
 *.log
+.cache/
+build/
 
 # VSCode
 .vscode/*
