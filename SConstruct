@@ -14,7 +14,7 @@ def validate_parent_dir(key, val, env):
         raise UserError("'%s' is not a directory: %s" % (key, os.path.dirname(val)))
 
 
-libname = "libname"
+libname = "template"
 projectdir = "project"
 
 localEnv = Environment(tools=["default"], PLATFORM="")
